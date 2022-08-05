@@ -21,9 +21,15 @@ const newCycleFormValidationSchema = zod.object({
     .max(60, 'Your task must be 60 minutes maximum.'),
 })
 
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema> // Inherits the types from the Zod's formSchema
+
 export const Home = () => {
-  const { register, handleSubmit, watch } = useForm({
+  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
   })
 
   const handleCreateNewCycle = (data: any) => {}
