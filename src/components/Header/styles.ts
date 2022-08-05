@@ -5,10 +5,17 @@ export const HeaderContainer = styled.header`
   align-items: center;
   justify-content: space-between;
 
+  span {
+      color: ${(props) => props.theme['purple-500']};
+      };
+
+
   nav {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+
+    }
 
     a {
       width: 3rem;
@@ -23,11 +30,11 @@ export const HeaderContainer = styled.header`
       border-bottom: 3px solid transparent;
 
       &:hover {
-        border-bottom: 3px solid ${(props) => props.theme['green-500']};
+        border-bottom: 3px solid ${(props) => props.theme['purple-500']};
       }
 
       &.active {
-        color: ${(props) => props.theme['green-500']};
+        color: ${(props) => props.theme['purple-500']};
       }
     }
   }
