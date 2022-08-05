@@ -1,4 +1,8 @@
 import { Play } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+
 import {
   CountdownContainer,
   FormContainer,
@@ -9,16 +13,42 @@ import {
   TaskInput,
 } from './styles'
 
+const newCycleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Please inform your task.'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'Your task must be at least 5 minutes longer.')
+    .max(60, 'Your task must be 60 minutes maximum.'),
+})
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema> // Inherits the types from the Zod's formSchema
+
 export const Home = () => {
+  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
+    resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
+  })
+
+  const handleCreateNewCycle = (data: any) => {}
+
+  const task = watch('task')
+  const minutesAmount = watch('minutesAmount')
+
+  const isSubmitDisabled = !task || !minutesAmount
+
   return (
     <HomeContainer>
-      <form action="">
+      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
         <FormContainer>
           <label htmlFor="">I will focus on</label>
           <TaskInput
             id="task"
             list="task-suggestions"
             placeholder="Name your task"
+            {...register('task')}
           />
           <datalist id="task-suggestions">
             <option value="Projeto 1"></option>
@@ -34,6 +64,7 @@ export const Home = () => {
             step={5}
             min={5}
             max={60}
+            {...register('minutesAmount', { valueAsNumber: true })}
           />
           <span>minutes.</span>
         </FormContainer>
@@ -46,7 +77,7 @@ export const Home = () => {
           <span>0</span>
         </CountdownContainer>
 
-        <StartCountDownButton type="submit">
+        <StartCountDownButton disabled={isSubmitDisabled} type="submit">
           <Play size={24} /> Start
         </StartCountDownButton>
       </form>
