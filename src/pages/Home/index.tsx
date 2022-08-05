@@ -12,7 +12,8 @@ import {
   StartCountDownButton,
   TaskInput,
 } from './styles'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import differenceInSeconds from 'date-fns/differenceInSeconds'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Please inform your task.'),
@@ -30,6 +31,7 @@ interface ICycle {
   id: string
   task: string
   minutesAmount: number
+  startDate: Date
 }
 
 export const Home = () => {
@@ -50,6 +52,7 @@ export const Home = () => {
       id: String(new Date().getTime()),
       task: data.task,
       minutesAmount: data.minutesAmount,
+      startDate: new Date(),
     }
 
     setCycle((state) => [...state, newCycle])
@@ -73,6 +76,16 @@ export const Home = () => {
   const minutesAmount = watch('minutesAmount')
 
   const isSubmitDisabled = !task || !minutesAmount
+
+  useEffect(() => {
+    if (activeCycle) {
+      setInterval(() => {
+        setAmountOfSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.startDate),
+        )
+      })
+    }
+  }, [activeCycle])
 
   return (
     <HomeContainer>
