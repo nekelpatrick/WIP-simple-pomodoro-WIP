@@ -73,6 +73,12 @@ export const Home = () => {
   const minutes = String(totalMinutesAmount).padStart(2, '0') // using padStart to prevent minutes string from having less than 02 caracters
   const seconds = String(totalSecondsAmount).padStart(2, '0') // using padStart to prevent seconds string from having less than 02 caracters
 
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds}`
+    }
+  }, [minutes, seconds, activeCycle])
+
   const task = watch('task')
   const minutesAmount = watch('minutesAmount')
 
