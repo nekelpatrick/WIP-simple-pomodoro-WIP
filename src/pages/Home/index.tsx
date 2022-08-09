@@ -57,6 +57,7 @@ export const Home = () => {
 
     setCycle((state) => [...state, newCycle])
     setActiveCycleId(newCycle.id)
+    setAmountOfSecondsPassed(0)
 
     reset()
   }
@@ -72,18 +73,30 @@ export const Home = () => {
   const minutes = String(totalMinutesAmount).padStart(2, '0') // using padStart to prevent minutes string from having less than 02 caracters
   const seconds = String(totalSecondsAmount).padStart(2, '0') // using padStart to prevent seconds string from having less than 02 caracters
 
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds}`
+    }
+  }, [minutes, seconds, activeCycle])
+
   const task = watch('task')
   const minutesAmount = watch('minutesAmount')
 
   const isSubmitDisabled = !task || !minutesAmount
 
   useEffect(() => {
+    let interval: number
+
     if (activeCycle) {
-      setInterval(() => {
+      interval = setInterval(() => {
         setAmountOfSecondsPassed(
           differenceInSeconds(new Date(), activeCycle.startDate),
         )
-      })
+      }, 1000)
+    }
+
+    return () => {
+      clearInterval(interval)
     }
   }, [activeCycle])
 
@@ -99,9 +112,9 @@ export const Home = () => {
             {...register('task')}
           />
           <datalist id="task-suggestions">
-            <option value="Projeto 1"></option>
-            <option value="Projeto 2"></option>
-            <option value="Projeto 3"></option>
+            <option value="Project 1"></option>
+            <option value="Project 2"></option>
+            <option value="Project 3"></option>
           </datalist>
 
           <label htmlFor="">for</label>
