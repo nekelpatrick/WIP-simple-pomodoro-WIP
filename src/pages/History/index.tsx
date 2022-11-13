@@ -1,6 +1,11 @@
+import { useContext } from 'react'
+import { CyclesContext } from '../../contexts/CyclesContext'
 import { HistoryContainer, HistoryList, Status } from './styles'
+import { formatDistanceToNow } from 'date-fns'
 
 export const History = () => {
+  const { cycles } = useContext(CyclesContext)
+
   return (
     <HistoryContainer>
       <h1>My history</h1>
@@ -17,41 +22,33 @@ export const History = () => {
           </thead>
 
           <tbody>
-            <tr>
-              <td>Task</td>
-              <td>20 minutes</td>
-              <td>2 months ago</td>
-              <td>
-                <Status statusColor="green">Done</Status>
-              </td>
-            </tr>
+            {cycles.map((element) => {
+              return (
+                <tr key={element.id}>
+                  <td>{element.task}</td>
+                  <td>{element.minutesAmount} minutes</td>
+                  <td>
+                    {formatDistanceToNow(element.startDate, {
+                      addSuffix: true,
+                    })}
+                  </td>
 
-            <tr>
-              <td>Task</td>
-              <td>20 minutes</td>
-              <td>2 months ago</td>
-              <td>
-                <Status statusColor="green">Done</Status>
-              </td>
-            </tr>
+                  <td>
+                    {element.finishedDate && (
+                      <Status statusColor="green">Done</Status>
+                    )}
 
-            <tr>
-              <td>Task</td>
-              <td>20 minutes</td>
-              <td>2 months ago</td>
-              <td>
-                <Status statusColor="yellow">Done</Status>
-              </td>
-            </tr>
+                    {element.interruptedDate && (
+                      <Status statusColor="red">Interrupted</Status>
+                    )}
 
-            <tr>
-              <td>Task</td>
-              <td>20 minutes</td>
-              <td>2 months ago</td>
-              <td>
-                <Status statusColor="red">Done</Status>
-              </td>
-            </tr>
+                    {!element.finishedDate && !element.interruptedDate && (
+                      <Status statusColor="yellow">In progress</Status>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </HistoryList>
