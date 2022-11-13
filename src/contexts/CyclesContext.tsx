@@ -1,4 +1,11 @@
-import { createContext, ReactNode, useReducer, useState } from 'react'
+import { differenceInSeconds } from 'date-fns'
+import {
+  createContext,
+  ReactNode,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import {
   addNewCycleAction,
   interruptCurrentCycleAction,
@@ -38,12 +45,31 @@ export function CyclesContextProvider({
       cycles: [],
       activeCycleId: null,
     },
+    () => {
+      const storedStateAsJSON = localStorage.getItem(
+        '@simple-pomodoro:cycles-state-1.0.0',
+      )
+
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
+      }
+    },
   )
-  const [amountOfSecondsPassed, setAmountOfSecondsPassed] = useState(0)
 
   const { cycles, activeCycleId } = cyclesState
-
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const [amountOfSecondsPassed, setAmountOfSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      return differenceInSeconds(new Date(), new Date(activeCycle.startDate))
+    }
+    return 0
+  })
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
+    localStorage.setItem('@simple-pomodoro:cycles-state-1.0.0', stateJSON)
+  }, [cyclesState])
 
   const setSecondsPassed = (seconds: number) => {
     setAmountOfSecondsPassed(seconds)
