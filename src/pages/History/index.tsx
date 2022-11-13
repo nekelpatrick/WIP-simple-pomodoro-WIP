@@ -28,7 +28,7 @@ export const History = () => {
                   <td>{element.task}</td>
                   <td>{element.minutesAmount} minutes</td>
                   <td>
-                    {formatDistanceToNow(element.startDate, {
+                    {formatDistanceToNow(new Date(element.startDate), {
                       addSuffix: true,
                     })}
                   </td>
