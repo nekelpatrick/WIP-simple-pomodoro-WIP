@@ -40,6 +40,11 @@ interface ICycle {
 export const Home = () => {
   const [cycles, setCycles] = useState<ICycle[]>([])
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  /*
+  I did this in order to prevent unecessary iterarions through 
+  the cycle array just to find the active cycle
+  */
+
   const [amountOfSecondsPassed, setAmountOfSecondsPassed] = useState(0)
 
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
@@ -50,16 +55,20 @@ export const Home = () => {
     },
   })
 
-  const handleCreateNewCycle = (data: any) => {
+  const handleCreateNewCycle = (data: NewCycleFormData) => {
+    const id = String(new Date().getTime())
+
     const newCycle: ICycle = {
-      id: String(new Date().getTime()),
+      id,
       task: data.task,
       minutesAmount: data.minutesAmount,
       startDate: new Date(),
     }
 
+    // whenever we alter an state that depends on its previous version, it is a best pratice to use as function syntax
     setCycles((state) => [...state, newCycle])
-    setActiveCycleId(newCycle.id)
+
+    setActiveCycleId(id)
     setAmountOfSecondsPassed(0)
 
     reset()
