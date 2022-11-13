@@ -119,7 +119,7 @@ export const Home = () => {
           activeCycle.startDate,
         )
 
-        if (secondsDifference >= totalSecondsAmount) {
+        if (secondsDifference >= totalSeconds) {
           setCycles((state) =>
             state.map((cycle) => {
               if (cycle.id === activeCycleId) {
@@ -130,7 +130,6 @@ export const Home = () => {
             }),
           )
           setAmountOfSecondsPassed(totalSeconds)
-
           clearInterval(interval)
         } else {
           setAmountOfSecondsPassed(secondsDifference)
@@ -141,7 +140,7 @@ export const Home = () => {
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle, totalSecondsAmount, activeCycleId])
+  }, [activeCycle, totalSeconds, activeCycleId])
 
   return (
     <HomeContainer>
